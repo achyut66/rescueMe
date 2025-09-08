@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaFacebook, FaInstagram, FaTwitter, FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Header() {
   const [flashVisible, setFlashVisible] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showEmergencyAlert, setShowEmergencyAlert] = useState(true);
 
   const medvec = `
 <div style='font-size:13px; line-height:1.5;'>
@@ -30,7 +32,6 @@ export default function Header() {
     enhancing MedEvac efficiency.
 </div>
 `;
-
 
 const rescue = `
 <div style='font-size:13px; line-height:1.5;'>
@@ -161,12 +162,25 @@ const rescue = `
   const [mobileActiveMenu, setMobileActiveMenu] = useState<string | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
+  // Scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+      setShowEmergencyAlert(scrollTop < 100); // Hide emergency alert when scrolled more than 100px
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const menus = [
     { Name: "Home", Link: "/" },
     { Name: "About", Link: "/about" },
     { Name: "Services", Link: "/services" },
     { Name: "Rescue", Link: "/rescue" },
     { Name: "Blog", Link: "/blog" },
+    { Name: "Gallery", Link: "/gallery" },
     { Name: "Contact", Link: "/contact" },
   ];
   
@@ -174,8 +188,8 @@ const rescue = `
   return (
     <header className="w-full">
       {/* Flash message */}
-      {flashVisible && (
-        <div className="bg-red-500 text-white text-center py-2 relative transition-all duration-300 ease-in-out">
+      {flashVisible && showEmergencyAlert && (
+        <div className="bg-red-500 text-white text-center py-2 fixed top-0 left-0 right-0 z-[10000] transition-all duration-300 ease-in-out">
           <span>Emergency Alert: Rescue flights available 24/7!</span>
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 font-bold hover:text-gray-200 transition-colors duration-300"
@@ -187,17 +201,34 @@ const rescue = `
       )}
 
       {/* Navbar */}
-      <nav className="flex items-center justify-between px-8 lg:px-[80px] py-6 bg-white shadow-md sticky top-0 z-50">
+      <nav className={`flex items-center justify-between px-8 lg:px-[80px] py-6 fixed left-0 right-0 z-[9999] transition-all duration-300 ease-in-out ${
+        flashVisible && showEmergencyAlert 
+          ? 'top-[40px]' 
+          : 'top-0'
+      } ${
+        isScrolled 
+          ? 'bg-white/98 backdrop-blur-lg shadow-xl border-b border-gray-200/50 py-4 transform scale-[0.98] ring-1 ring-white/20' 
+          : 'bg-white shadow-md py-6 transform scale-100'
+      }`}>
         {/* Logo */}
         <Link href='/'>
-        <div className="flex items-center cursor-pointer">
-          <Image src="/image/logo.png" alt="Logo" height={40} width={200} loading="eager" />
+        <div className="flex items-center cursor-pointer transition-all duration-300">
+          <Image 
+            src="/image/logo.png" 
+            alt="Logo" 
+            height={isScrolled ? 32 : 40} 
+            width={isScrolled ? 160 : 200} 
+            loading="eager" 
+            className="transition-all duration-300"
+          />
         </div>
         </Link>
         
 
         {/* Menu */}
-        <ul className="hidden md:flex space-x-8 font-medium text-gray-700 relative">
+        <ul className={`hidden md:flex space-x-8 font-medium text-gray-700 relative transition-all duration-300 ${
+          isScrolled ? 'space-x-6' : 'space-x-8'
+        }`}>
             {menus.map((menu) => (
                 <li
                 key={menu.Name}
@@ -218,7 +249,7 @@ const rescue = `
                       const timeout = setTimeout(() => {
                         setSubmenuOpen(false);
                         setActiveMenu(null);
-                      }, 100);
+                      }, 150);
                       setHoverTimeout(timeout);
                     }
                 }}
@@ -235,7 +266,9 @@ const rescue = `
 
 
         {/* Social Icons */}
-        <div className="hidden md:flex space-x-4 text-gray-700">
+        <div className={`hidden md:flex text-gray-700 transition-all duration-300 ${
+          isScrolled ? 'space-x-3' : 'space-x-4'
+        }`}>
           {[FaFacebook, FaInstagram, FaTwitter].map((Icon, index) => (
             <Icon
               key={index}
@@ -257,7 +290,11 @@ const rescue = `
 
       {/* Mobile dropdown menu */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[110px] z-[9999] bg-white border-t border-gray-200 shadow-2xl">
+        <div className={`md:hidden fixed inset-x-0 z-[9999] bg-white border-t border-gray-200 shadow-2xl transition-all duration-300 ${
+          flashVisible && showEmergencyAlert 
+            ? (isScrolled ? 'top-[128px]' : 'top-[150px]')
+            : (isScrolled ? 'top-[88px]' : 'top-[110px]')
+        }`}>
           <div className="px-5 py-4 space-y-2">
             {menus.map((menu) => {
               const hasSub = Boolean(submenuData[menu.Name]);
@@ -354,7 +391,11 @@ const rescue = `
             activeMenu === 'Rescue'
               ? 'bg-rose-50 ring-rose-400/40'
               : 'bg-gray-50 ring-blue-400/40'
-          } fixed left-1/2 -translate-x-1/2 top-[110px] w-[min(92vw,1100px)] z-[9999] rounded-md shadow-2xl ring-1 overflow-hidden`}
+          } fixed left-1/2 -translate-x-1/2 w-[min(92vw,1100px)] z-[9999] rounded-md shadow-2xl ring-1 overflow-hidden transition-all duration-300 ${
+            flashVisible && showEmergencyAlert 
+              ? (isScrolled ? 'top-[128px]' : 'top-[150px]')
+              : (isScrolled ? 'top-[88px]' : 'top-[110px]')
+          }`}
           onMouseEnter={() => {
             if (hoverTimeout) {
               clearTimeout(hoverTimeout);
@@ -366,7 +407,7 @@ const rescue = `
             const timeout = setTimeout(() => {
               setSubmenuOpen(false);
               setActiveMenu(null);
-            }, 100);
+            }, 150);
             setHoverTimeout(timeout);
           }}
         >
@@ -385,8 +426,9 @@ const rescue = `
                           <Image
                             src={candidate}
                             alt={`${activeMenu} ${submenuData[activeMenu].items[activeIndex]}`}
-                            width={1000}
-                            height={400}
+                            width={700}
+                            height={700}
+                            quality={100}
                             className="w-full h-full object-cover"
                           />
                         </div>

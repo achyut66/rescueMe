@@ -394,11 +394,11 @@ export default function HomePage() {
 
 
       {/* Backend Message Display */}
-      {message && (
+      {/* {message && (
         <div className="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded-lg shadow-lg z-50">
           <p className="text-sm">Backend: {message}</p>
         </div>
-      )}
+      )} */}
     </div>
     </>
   );
