@@ -121,20 +121,20 @@ const rescue = `
   const submenuData: {
     [key: string]: { items: string[], descriptions: string[], images?: string[], title:string[] };
   } = {
-    Services: {
-      items: ["Helicopter Tours", "Guided Trips", "Emergency Evacuation"],
-      title: ['Helicopter Tours','Guide To Trip','Evacuation On Emergency'],
-      descriptions: [
-        "Helicopter tours in Nepal offer an extraordinary way to witness the majestic Himalayas, including iconic peaks like Mount Everest, Annapurna, and Langtang. Flights typically last 30–60 minutes and provide breathtaking aerial views of snow-capped mountains, glaciers, and deep valleys, with options for private or group tours and photography packages. <br> These tours have grown in popularity among adventure and luxury travelers, boosting Nepal’s tourism sector. In 2023, Himalayan helicopter tourism contributed significantly to the industry’s revenue, attracting thousands of visitors seeking unique, once-in-a-lifetime experiences and panoramic vistas of the world’s highest peaks.",
-        "Guiding a tour in the Nepal Himalayas lets travelers experience stunning landscapes, from snow-capped peaks to deep valleys, glacial rivers, and serene alpine meadows, while learning about local culture, traditions, and history. Guides ensure safety, point out scenic spots, highlight hidden gems along the way, and share fascinating stories about the mountains, villages, and wildlife. <br> They also handle logistics like accommodations, transportation, and trekking permits, while recommending authentic experiences, local cuisine, and cultural interactions, making each trek or sightseeing trip a memorable adventure filled with breathtaking views, rich cultural insights, and unforgettable memories.",
-        "Guiding a tour in the Nepal Himalayas lets travelers experience stunning landscapes, from snow-capped peaks to deep valleys, glacial rivers, and serene alpine meadows, while learning about local culture, traditions, and history. Guides ensure safety, point out scenic spots, highlight hidden gems along the way, and share fascinating stories about the mountains, villages, and wildlife. They are also trained to handle emergencies, including medical situations and evacuation procedures, ensuring travelers’ well-being throughout the journey. <br> In addition to managing logistics like accommodations, transportation, and trekking permits, guides recommend authentic experiences, local cuisine, and cultural interactions. Their expertise transforms each trek or sightseeing trip into a safe and memorable adventure, filled with breathtaking views, rich cultural insights, and unforgettable memories, even in unexpected situations.",
-      ],
-      images: [
-        "/menu/heli.jpeg", 
-        "/menu/guide1.webp", 
-        "/menu/eva1.jpg"
-    ],
-    },
+    // Services: {
+    //   items: ["Helicopter Tours", "Guided Trips", "Emergency Evacuation"],
+    //   title: ['Helicopter Tours','Guide To Trip','Evacuation On Emergency'],
+    //   descriptions: [
+    //     "Helicopter tours in Nepal offer an extraordinary way to witness the majestic Himalayas, including iconic peaks like Mount Everest, Annapurna, and Langtang. Flights typically last 30–60 minutes and provide breathtaking aerial views of snow-capped mountains, glaciers, and deep valleys, with options for private or group tours and photography packages. <br> These tours have grown in popularity among adventure and luxury travelers, boosting Nepal’s tourism sector. In 2023, Himalayan helicopter tourism contributed significantly to the industry’s revenue, attracting thousands of visitors seeking unique, once-in-a-lifetime experiences and panoramic vistas of the world’s highest peaks.",
+    //     "Guiding a tour in the Nepal Himalayas lets travelers experience stunning landscapes, from snow-capped peaks to deep valleys, glacial rivers, and serene alpine meadows, while learning about local culture, traditions, and history. Guides ensure safety, point out scenic spots, highlight hidden gems along the way, and share fascinating stories about the mountains, villages, and wildlife. <br> They also handle logistics like accommodations, transportation, and trekking permits, while recommending authentic experiences, local cuisine, and cultural interactions, making each trek or sightseeing trip a memorable adventure filled with breathtaking views, rich cultural insights, and unforgettable memories.",
+    //     "Guiding a tour in the Nepal Himalayas lets travelers experience stunning landscapes, from snow-capped peaks to deep valleys, glacial rivers, and serene alpine meadows, while learning about local culture, traditions, and history. Guides ensure safety, point out scenic spots, highlight hidden gems along the way, and share fascinating stories about the mountains, villages, and wildlife. They are also trained to handle emergencies, including medical situations and evacuation procedures, ensuring travelers’ well-being throughout the journey. <br> In addition to managing logistics like accommodations, transportation, and trekking permits, guides recommend authentic experiences, local cuisine, and cultural interactions. Their expertise transforms each trek or sightseeing trip into a safe and memorable adventure, filled with breathtaking views, rich cultural insights, and unforgettable memories, even in unexpected situations.",
+    //   ],
+    //   images: [
+    //     "/menu/heli.jpeg", 
+    //     "/menu/guide1.webp", 
+    //     "/menu/eva1.jpg"
+    // ],
+    // },
     Rescue: {
       items: ["Medical Evacuation (MedEvac)", "Mountain or Trekking Rescue", "Search and Rescue (SAR) Operations","Emergency Evacuation from Accommodation or Camps","Natural Disaster or Environmental Rescue"],
       title:['MedVec','Mountain Rescue','SAR','Emergency Evacuation','Natural Disaster'],
@@ -177,7 +177,7 @@ const rescue = `
   const menus = [
     { Name: "Home", Link: "/" },
     { Name: "About", Link: "/about" },
-    { Name: "Services", Link: "/services" },
+    // { Name: "Services", Link: "/services" },
     { Name: "Rescue", Link: "/rescue" },
     { Name: "Blog", Link: "/blog" },
     { Name: "Gallery", Link: "/gallery" },
@@ -201,13 +201,13 @@ const rescue = `
       )}
 
       {/* Navbar */}
-      <nav className={`flex items-center justify-between px-8 lg:px-[80px] py-6 fixed left-0 right-0 z-[9999] transition-all duration-300 ease-in-out ${
+      <nav className={`flex items-center justify-between px-8 lg:px-[80px] py-6 fixed left-0 right-0 z-[9999] transition-all duration-50 ease-in-out ${
         flashVisible && showEmergencyAlert 
           ? 'top-[40px]' 
-          : 'top-0'
+          : 'top-[-3px]'
       } ${
         isScrolled 
-          ? 'bg-white/98 backdrop-blur-lg shadow-xl border-b border-gray-200/50 py-4 transform scale-[0.98] ring-1 ring-white/20' 
+          ? 'bg-white/98 backdrop-blur-lg shadow-xl border-b border-gray-200/50 py-4 transform scale-[0.999] ring-1 ring-white/20' 
           : 'bg-white shadow-md py-6 transform scale-100'
       }`}>
         {/* Logo */}
@@ -391,9 +391,9 @@ const rescue = `
             activeMenu === 'Rescue'
               ? 'bg-rose-50 ring-rose-400/40'
               : 'bg-gray-50 ring-blue-400/40'
-          } fixed left-1/2 -translate-x-1/2 w-[min(92vw,1100px)] z-[9999] rounded-md shadow-2xl ring-1 overflow-hidden transition-all duration-300 ${
+          } fixed left-1/2 -translate-x-1/2 w-[min(92vw,1100px)] z-[9999] rounded-md shadow-2xl ring-1 overflow-hidden transition-all duration-200 ${
             flashVisible && showEmergencyAlert 
-              ? (isScrolled ? 'top-[128px]' : 'top-[150px]')
+              ? (isScrolled ? 'top-[128px]' : 'top-[138px]')
               : (isScrolled ? 'top-[88px]' : 'top-[110px]')
           }`}
           onMouseEnter={() => {

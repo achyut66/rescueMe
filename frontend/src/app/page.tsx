@@ -13,13 +13,60 @@ export default function HomePage() {
   useEffect(() => {
     document.title = "BaseCamp Trip | Home";
   }, []);
-  const [message, setMessage] = useState<string>("");
   const [stats, setStats] = useState({
     totalRescues: 0,
     livesSaved: 0,
     helicoptersDeployed: 0,
     responseTime: 0
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+        console.error('Error:', data.error);
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Animated counter effect
   useEffect(() => {
@@ -56,12 +103,6 @@ export default function HomePage() {
     animateCounters();
   }, []);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/message")
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.error("Error fetching message:", err));
-  }, []);
 
   
 
@@ -350,34 +391,63 @@ export default function HomePage() {
             {/* Contact Form */}
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
               <h3 className="text-2xl font-bold mb-6 text-center">Send us a Message</h3>
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Status Messages */}
+                {submitStatus === 'success' && (
+                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl">
+                    Your message has been sent successfully! We&apos;ll get back to you soon.
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+                    Failed to send message. Please try again later.
+                  </div>
+                )}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input
                     type="text"
+                    name="name"
                     placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-green-500"
                   />
                   <input
                     type="email"
+                    name="email"
                     placeholder="Your Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-green-500"
                   />
                 </div>
                 <input
                   type="text"
+                  name="subject"
                   placeholder="Subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-green-500"
                 />
                 <textarea
+                  name="message"
                   rows={4}
                   placeholder="Your Message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-green-500 resize-none"
                 ></textarea>
                 <button
                   type="submit"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-colors duration-300"
+                  disabled={isSubmitting}
+                  className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:transform-none"
                 >
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>
